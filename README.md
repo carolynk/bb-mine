@@ -1,13 +1,7 @@
-This code implements the branch and bound algorithm for GPS-denied Environment
-## Running the program
+This code implements the Branch and Bound algorithm for GPS-denied Environment
 
-1-Install python3 in your machine :
-for example ,for windows from the following website:
-https://www.python.org/downloads/windows/
-2-Open the command prompt using the ‘window+r’ keyboard shortcut. Now, type the word ‘cmd’ to open the command prompt.
-3-Change the directory location to the location where you saved your Python(main.py) file using the command 'cd \Path_Of_File'.
-4-To execute the Python file, you have to use the keyword ‘Python3’ followed by the file name with extension 'python3 main.py'
+## Run
+python3 main.py
 
-
-
-##inside the code their some test already implemented in main function
+## Test
+Some tests already implemented in main function
