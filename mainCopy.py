@@ -1,3 +1,6 @@
+# TODO: the problem is when the best cost is less than the current and the best already expanded
+# it will keep choosing the same node to expand
+
 from graph import Node, Graph
 import unittest as ut
 import matplotlib.pyplot as plt
@@ -73,6 +76,8 @@ class BB:
         while F is not None:
             # select from F the (v,path_from_start) where the cost between s and v is the lowest
             minv = self.select_v_with_lowest_cost(F)
+            # if minv in visited.keys():
+            #     F[minv][1]= sys.maxsize - 1
             print("minv", minv)
             # check if this node visited before or not
             print("f ",F)
