@@ -146,6 +146,19 @@ class GraphTest(ut.TestCase):
         self.assertEqual(g.get_neighbors(1), {2: 17, 3: 34})
         self.assertEqual(g.get_neighbors(2), {1: 17})
 
+    def test_tagwa_graph(self):
+        # graph = {"a": {"b": 2, "c": 1},
+        #          "b": {"d": 1},
+        #          "c": {"a": 1, "b": 1, "d": 3, "e": 7},
+        #          "d": {"f": 2, "c": 3},
+        #          "e": {"c": 7}
+        #          }
+
+        g1 = Graph()
+
+
+
+
     def test_random_graph(self, n, m):
         """ Test methods for a random graph """
 
