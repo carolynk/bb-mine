@@ -20,19 +20,21 @@ class BB:
 
     # select from F the (v,path_from_start) where the cost between s and v is the lowest
     def select_v_with_lowest_cost(self,f):
-        # print(f)
+        print(f)
         minNode = None
-        minCost = -1
+        minCost = sys.maxsize
         for node in f.keys():
-            # print(node)
-            if minCost < f[node][1]:
+            if minCost > f[node][1]:
                 minNode = node
+                minCost = f[node][1]
+                print(minNode)
 
         return minNode
 
 
     # expand configuration
     def expand(self,node,f):
+
         if f[node][0] is None:
             pathFromStart = [a]
         else:
@@ -44,7 +46,7 @@ class BB:
             temp = list.copy(pathFromStart)
             if node not in temp:
                 temp.insert(0,node)
-            if neighbour not in pathFromStart:
+            if neighbour not in pathFromStart and neighbour is not self.end_node:
                 temp.append(neighbour)
                 configration.append(temp)
         print("configration",configration)
@@ -65,23 +67,26 @@ class BB:
 
     def shortestPath(self):
         F = defaultdict(lambda :[]) #contains {v:path_from_start,cost}
-        F[self.start_node] = [[],sys.maxsize]
+        F[self.start_node] = [[],1.0]
         b = ["",[],sys.maxsize] # [lastNode,pathFromStart,cost]}
         visited = defaultdict(lambda :[]) #contains {v:[path_from_start,cost]}
         while F is not None:
             # select from F the (v,path_from_start) where the cost between s and v is the lowest
             minv = self.select_v_with_lowest_cost(F)
-
+            print("minv", minv)
             # check if this node visited before or not
-
+            print("f ",F)
             # Expand
             configurations=self.expand(minv,F)
-            # print(configurations)
+            print(configurations)
+            if not configurations:
+                print("here2")
+                F[minv][1]= sys.maxsize
 
 
             for pathFromStart in configurations:
                 lastNodeInpathFromStart = pathFromStart[-1]
-                print("minv", minv)
+
                 print("pathFromStart=",pathFromStart)
                 if minv not in visited.keys():
                     visited[minv] = []
@@ -104,16 +109,19 @@ class BB:
                     check = "solution found"
                 else:
                     check = "continue"
-                if c < b[2]:
-                    b = [lastNodeInpathFromStart, pathFromStart, c]
+
                 print("check",check)
                 if check == "solution found":
-                    F =None
-                    return pathFromStart
+                    if c < b[2]:
+                        b = [lastNodeInpathFromStart, pathFromStart, c]
+                    # F =None
+                    # return pathFromStart
                 elif check == "dead end":
                     # discard configuration
+                    configurations.remove(pathFromStart)
+
                     # configurations.remove(pathFromStart)
-                    b[lastNodeInpathFromStart]=[]
+                    # b[lastNodeInpathFromStart]=[]
 
                 # elif c < b[2]:
                 #     b = [lastNodeInpathFromStart, pathFromStart, c]
@@ -127,10 +135,10 @@ class BB:
                 else:
                     print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
                     print(b[2])
-                    if self.lowerBound(lastNodeInpathFromStart, pathFromStart) >= b[2] and b[0] not in pathFromStart:
+                    if self.lowerBound(lastNodeInpathFromStart, pathFromStart) < b[2] :
                         print("here")
-                        c = self.lowerBound(lastNodeInpathFromStart, pathFromStart)
-                        F[lastNodeInpathFromStart]= [pathFromStart, c]
+                        cost = self.lowerBound(lastNodeInpathFromStart, pathFromStart)
+                        F[lastNodeInpathFromStart]= [pathFromStart, cost]
                         print("f",F)
                     # else:
                         # discard configuration
