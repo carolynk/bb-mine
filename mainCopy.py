@@ -37,7 +37,7 @@ class BB:
             pathFromStart = [a]
         else:
             pathFromStart = f[node][0]
-        print(pathFromStart)
+        print("path inside config",pathFromStart)
         configration =[]
         for neighbour in self.graph[node].keys():
             # print(neighbour)
@@ -80,6 +80,7 @@ class BB:
 
 
             for pathFromStart in configurations:
+                lastNodeInpathFromStart = pathFromStart[-1]
                 print("minv", minv)
                 print("pathFromStart=",pathFromStart)
                 if minv not in visited.keys():
@@ -87,32 +88,35 @@ class BB:
                     visited[minv].append(F[minv][0])  # add pathFromStart
                     visited[minv].append(F[minv][1])  # add cost
 
-                    # print("visited", visited)
+                    print("visited", visited)
 
                 # calculate cost for v
                 c = self.calc_cost(pathFromStart)
                 # print("cost",c)
                 # if pathFromStart is not None:
-                lastNodeInpathFromStart = pathFromStart[-1]
+
                 # print(lastNodeInpathFromStart)
-                print(visited[lastNodeInpathFromStart])
+                # print(visited[lastNodeInpathFromStart])
                 if visited[lastNodeInpathFromStart] != [] and visited[lastNodeInpathFromStart][1] < c :
                     # print("visit cost ,",lastNodeInpathFromStart," ",visited[lastNodeInpathFromStart][1])
                     check = "dead end"
-                elif lastNodeInpathFromStart is self.end_node and len(path_from_start) >= self.min_items:
+                elif lastNodeInpathFromStart is self.end_node and len(pathFromStart) >= self.min_items:
                     check = "solution found"
                 else:
                     check = "continue"
-
+                if c < b[2]:
+                    b = [lastNodeInpathFromStart, pathFromStart, c]
                 print("check",check)
                 if check == "solution found":
                     F =None
+                    return pathFromStart
                 elif check == "dead end":
                     # discard configuration
-                    configurations.remove(pathFromStart)
+                    # configurations.remove(pathFromStart)
+                    b[lastNodeInpathFromStart]=[]
 
-                elif c < b[2]:
-                    b = [lastNodeInpathFromStart, pathFromStart, c]
+                # elif c < b[2]:
+                #     b = [lastNodeInpathFromStart, pathFromStart, c]
                 # else:
                 #     # discard configuration
                 #     configurations.remove(pathFromStart)
@@ -123,14 +127,15 @@ class BB:
                 else:
                     print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
                     print(b[2])
-                    if self.lowerBound(lastNodeInpathFromStart, pathFromStart) <= b[2]:
+                    if self.lowerBound(lastNodeInpathFromStart, pathFromStart) >= b[2] and b[0] not in pathFromStart:
                         print("here")
                         c = self.lowerBound(lastNodeInpathFromStart, pathFromStart)
                         F[lastNodeInpathFromStart]= [pathFromStart, c]
                         print("f",F)
-                    else:
+                    # else:
                         # discard configuration
-                        return
+                        # configurations.remove(pathFromStart)
+                print ("==================================================")
 
         return b
 
