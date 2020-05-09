@@ -42,11 +42,11 @@ class BB:
         for neighbour in self.graph[node].keys():
             # print(neighbour)
             temp = list.copy(pathFromStart)
-            # temp.insert(0,node)
+            temp.insert(0,node)
             if neighbour not in pathFromStart:
                 temp.append(neighbour)
                 configration.append(temp)
-
+        print("configration",configration)
         return configration
 
     # return distance of edges in path
@@ -70,7 +70,7 @@ class BB:
         while F is not None:
             # select from F the (v,path_from_start) where the cost between s and v is the lowest
             minv = self.select_v_with_lowest_cost(F)
-            print("minv",minv)
+
             # check if this node visited before or not
 
             # Expand
@@ -79,30 +79,31 @@ class BB:
 
 
             for pathFromStart in configurations:
-                print(visited.keys())
+                print("minv", minv)
+                print("pathFromStart=",pathFromStart)
                 if minv not in visited.keys():
                     visited[minv] = []
                     visited[minv].append(F[minv][0])  # add pathFromStart
                     visited[minv].append(F[minv][1])  # add cost
 
-                    print("visited", visited)
+                    # print("visited", visited)
 
                 # calculate cost for v
                 c = self.calc_cost(pathFromStart)
-                print("cost",c)
+                # print("cost",c)
                 # if pathFromStart is not None:
                 lastNodeInpathFromStart = pathFromStart[-1]
                 # print(lastNodeInpathFromStart)
                 print(visited[lastNodeInpathFromStart])
                 if visited[lastNodeInpathFromStart] != [] and visited[lastNodeInpathFromStart][1] < c :
-                    print("visit cost ,",lastNodeInpathFromStart," ",visited[lastNodeInpathFromStart][1])
+                    # print("visit cost ,",lastNodeInpathFromStart," ",visited[lastNodeInpathFromStart][1])
                     check = "dead end"
                 elif lastNodeInpathFromStart is self.end_node and len(path_from_start) >= self.min_items:
                     check = "solution found"
                 else:
                     check = "continue"
 
-                print("check",check)
+                # print("check",check)
                 if check == "solution found":
                     if c < b[2]:
                         b = {lastNodeInpathFromStart, pathFromStart, c}
