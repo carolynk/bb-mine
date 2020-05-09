@@ -23,14 +23,13 @@ class BB:
 
     # select from F the (v,path_from_start) where the cost between s and v is the lowest
     def select_v_with_lowest_cost(self,f):
-        print(f)
         minNode = None
         minCost = sys.maxsize
         for node in f.keys():
             if minCost > f[node][1]:
                 minNode = node
                 minCost = f[node][1]
-                print(minNode)
+
 
         return minNode
 
@@ -42,17 +41,15 @@ class BB:
             pathFromStart = [a]
         else:
             pathFromStart = f[node][0]
-        print("path inside config",pathFromStart)
+
         configration =[]
         for neighbour in self.graph[node].keys():
-            # print(neighbour)
             temp = list.copy(pathFromStart)
             if node not in temp:
                 temp.insert(0,node)
-            if neighbour not in pathFromStart and neighbour is not self.end_node:
+            if neighbour not in pathFromStart :
                 temp.append(neighbour)
                 configration.append(temp)
-        print("configration",configration)
         return configration
 
     # return distance of edges in path
@@ -76,37 +73,29 @@ class BB:
         while F is not None:
             # select from F the (v,path_from_start) where the cost between s and v is the lowest
             minv = self.select_v_with_lowest_cost(F)
-            # if minv in visited.keys():
-            #     F[minv][1]= sys.maxsize - 1
-            print("minv", minv)
-            # check if this node visited before or not
-            print("f ",F)
+
             # Expand
             configurations=self.expand(minv,F)
-            print(configurations)
+            # if we arrived to dead end
             if not configurations:
-                print("here2")
                 F[minv][1]= sys.maxsize
-
 
             for pathFromStart in configurations:
                 lastNodeInpathFromStart = pathFromStart[-1]
-
-                print("pathFromStart=",pathFromStart)
+                # check if this node visited before or not
                 if minv not in visited.keys():
                     visited[minv] = []
                     visited[minv].append(F[minv][0])  # add pathFromStart
                     visited[minv].append(F[minv][1])  # add cost
 
-                    print("visited", visited)
+                    # print("visited", visited)
 
+                # delete it became  dont want it to expand again
+                if minv in F.keys():
+                    del F[minv]
                 # calculate cost for v
                 c = self.calc_cost(pathFromStart)
-                # print("cost",c)
-                # if pathFromStart is not None:
 
-                # print(lastNodeInpathFromStart)
-                # print(visited[lastNodeInpathFromStart])
                 if visited[lastNodeInpathFromStart] != [] and visited[lastNodeInpathFromStart][1] < c :
                     # print("visit cost ,",lastNodeInpathFromStart," ",visited[lastNodeInpathFromStart][1])
                     check = "dead end"
@@ -114,41 +103,28 @@ class BB:
                     check = "solution found"
                 else:
                     check = "continue"
+                    # update the node
+                    visited[lastNodeInpathFromStart] = [pathFromStart,c]
 
-                print("check",check)
+
                 if check == "solution found":
+                    print("check", check)
                     if c < b[2]:
                         b = [lastNodeInpathFromStart, pathFromStart, c]
-                    # F =None
-                    # return pathFromStart
+                    F =None
+                    return pathFromStart
                 elif check == "dead end":
                     # discard configuration
                     configurations.remove(pathFromStart)
 
-                    # configurations.remove(pathFromStart)
-                    # b[lastNodeInpathFromStart]=[]
-
-                # elif c < b[2]:
-                #     b = [lastNodeInpathFromStart, pathFromStart, c]
-                # else:
-                #     # discard configuration
-                #     configurations.remove(pathFromStart)
-                #     break
-
-
 
                 else:
-                    print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
-                    print(b[2])
+                    # print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
                     if self.lowerBound(lastNodeInpathFromStart, pathFromStart) < b[2] :
-                        print("here")
                         cost = self.lowerBound(lastNodeInpathFromStart, pathFromStart)
                         F[lastNodeInpathFromStart]= [pathFromStart, cost]
-                        print("f",F)
-                    # else:
-                        # discard configuration
-                        # configurations.remove(pathFromStart)
-                print ("==================================================")
+
+                # print ("==================================================")
 
         return b
 
