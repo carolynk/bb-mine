@@ -6,6 +6,7 @@ import unittest as ut
 import matplotlib.pyplot as plt
 import sys
 from collections import defaultdict
+import time
 class BB:
 
     def __init__(self, g, m, s, e):
