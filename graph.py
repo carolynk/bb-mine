@@ -164,8 +164,6 @@ class GraphTest(ut.TestCase):
         g1 = Graph()
 
 
-
-
     def test_random_graph(self, n, m):
         """ Test methods for a random graph """
 
@@ -182,4 +180,8 @@ if __name__ == '__main__':
     num_of_edges = int(math.log(num_of_nodes, 2))
     gt.test_random_graph(num_of_nodes, num_of_edges)
 
+    g5 = Graph()
+    g5.generate_graph(num_of_nodes, num_of_edges, 50)
+    g5.create_adjlist()
+    print(g5.adjlist)
     print("All tests passed")

@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import sys
 from collections import defaultdict
 import time
+import math
+
 class BB:
 
     def __init__(self, g, m, s, e):
@@ -186,8 +188,18 @@ def main():
     min = 4
     start = "a"
     end = "g"
-    bb = BB(graph, min, start, end)
+    bb = BB(graph2, min, start, end)
     print(bb.shortestPath())
 
 if __name__ == "__main__":
   main()
+  #   num_of_nodes = 3
+  #   num_of_edges = 5
+  #   g1 = Graph()
+  #   # print(g1)
+  #
+  #   g1.generate_graph(num_of_nodes, num_of_edges, 50)
+  #   print(g1)
+
+# g1.create_adjlist()
+    # print(g1.adjlist)
