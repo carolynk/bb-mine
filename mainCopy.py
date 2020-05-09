@@ -173,10 +173,19 @@ def main():
              "d": {"f":2,"c":3},
              "e": {"c":7}
             }
+
+    graph2 = {"a": {"b": 3, "c": 5},
+              "b": {"d": 1,"e":2},
+              "c": {"a": 5, "e": 3},
+              "d": {"f": 2, "e": 1, "b":1},
+              "e": {"c": 3,"b":2, "d":1, "f":4},
+              "f": {"g":1},
+              "g": {"f":1}
+             }
     min = 4
     start = "a"
-    end = "f"
-    bb = BB(graph, min, start, end)
+    end = "g"
+    bb = BB(graph2, min, start, end)
     print(bb.shortestPath())
 
 if __name__ == "__main__":
