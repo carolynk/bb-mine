@@ -23,10 +23,10 @@ class Node:
 
     # adds a neighbor node id
     def add_neighbor(self, nid, w):
-        self.edges[nid].append(w)
+        self.edges[nid] = w
 
     def has_neighbor(self, nid):
-        return nid in self.edges
+      return nid in self.edges.keys()
 
     def get_weight(self):
         pass
@@ -70,9 +70,9 @@ class Graph:
             nodes = {}
         self.adjlist = nodes
 
+
     # Adds a node by id
     def add_node(self, id_):
-
         new_node = Node(id_)
         self.adjlist[id_] = (new_node)
 
@@ -100,30 +100,20 @@ class Graph:
     def get_neighbors(self, id_):
         return self.get_node(id_).edges
 
-    def get_all_neighbors(self, ids):
-        """
-        :param ids: list of ints
-            Ids of nodes
-
-        :return: set of neighbors
-
-        """
-        new = set()
-        for id_ in ids:
-            new.update(set(self.get_node(id_).edges))
-        return new
-
     def edge_exists(self, id1, id2):
         if (self.get_node(id1) is None) or (self.get_node(id2) is None):
             return False
         else:
             return self.get_node(id1).has_neighbor(id2)
 
-    def generate_graph(self, n, m):
+    def generate_graph(self, n, m, maxw):
         """ Generate an Erdős–Rényi random graph of n nodes, and m edges """
 
         for i in range(1, n + 1):
             self.add_node(i)
+
+        for i in range(1, m + 1):
+            w = random.randint(1, maxw)
 
         for i in range(1, m + 1):
             id1 = random.randint(1, n)
@@ -134,7 +124,7 @@ class Graph:
                     id1 = random.randint(1, n)
                 else:
                     id2 = random.randint(1, n)
-            self.add_edge_undirected(id1, id2)
+            self.add_edge_undirected(id1, id2, w)
         return self
 
 
@@ -142,33 +132,25 @@ class GraphTest(ut.TestCase):
     """ Test methods for Graph """
 
     def test_tiny_graph(self):
-        g4 = Graph()
-        g4.add_node(1)
-        g4.add_node(2)
-        g4.add_node(3)
+        g = Graph()
+        g.add_node(1)
+        g.add_node(2)
+        g.add_node(3)
         # undirected
-        g4.add_edge_undirected(1, 2, 1)
-        g4.add_edge_undirected(1, 3, 1)
+        g.add_edge_undirected(1, 2, 17)
+        g.add_edge_undirected(1, 3, 34)
 
-        self.assertEqual(g4.edge_exists(1, 2), True)
-        self.assertEqual(g4.edge_exists(2, 1), True)
-        self.assertEqual(g4.edge_exists(3, 2), False)
-        self.assertEqual(g4.get_neighbors(1), {2, 3})
-        self.assertEqual(g4.get_neighbors(2), {1})
-        self.assertEqual(g4.get_all_neighbors([1, 2]), {1, 2, 3})
-        self.assertEqual(g4.get_all_neighbors([3]), {1})
+        self.assertEqual(g.edge_exists(1, 2), True)
+        self.assertEqual(g.edge_exists(2, 1), True)
+        self.assertEqual(g.edge_exists(3, 2), False)
+        self.assertEqual(g.get_neighbors(1), {2: 17, 3: 34})
+        self.assertEqual(g.get_neighbors(2), {1: 17})
 
     def test_random_graph(self, n, m):
         """ Test methods for a random graph """
 
         g_rand = Graph()
-        g_rand.generate_graph(n, m)
-
-        # Pass in list of all node ids
-        # Test if get_all_neighbors on all node ids is:
-        # less than or equal to # of all nodes
-        # greater than or equal to # of all edges
-        self.assertTrue(m <= len(g_rand.get_all_neighbors(list(g_rand.adjlist.keys()))) <= n)
+        g_rand.generate_graph(n, m, 50)
 
 
 if __name__ == '__main__':
@@ -176,7 +158,7 @@ if __name__ == '__main__':
     gt.test_tiny_graph()
 
     # Random Graph Test
-    num_of_nodes = 1000
+    num_of_nodes = 10
     num_of_edges = int(math.log(num_of_nodes, 2))
     gt.test_random_graph(num_of_nodes, num_of_edges)
 
