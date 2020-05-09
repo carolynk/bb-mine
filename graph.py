@@ -68,19 +68,20 @@ class Graph:
         """
         if nodes is None:
             nodes = {}
-        self.adjlist = nodes
+        self.nodes = nodes
+        self.adjlist = {}
 
 
     # Adds a node by id
     def add_node(self, id_):
         new_node = Node(id_)
-        self.adjlist[id_] = (new_node)
+        self.nodes[id_] = (new_node)
 
     # Gets a node by id
     def get_node(self, id_):
         """ Gets a node by id """
-        if id_ in self.adjlist.keys():
-            return self.adjlist[id_]
+        if id_ in self.nodes.keys():
+            return self.nodes[id_]
         return None
 
     def add_edge(self, fr, to, w):
@@ -127,15 +128,17 @@ class Graph:
             self.add_edge_undirected(id1, id2, w)
         return self
 
+    def create_adjlist(self):
+        for id_ in self.nodes:
+            self.adjlist[id_] = self.get_node(id_).edges
+
+
 
 class GraphTest(ut.TestCase):
     """ Test methods for Graph """
 
     def test_tiny_graph(self):
         g = Graph()
-        g.add_node(1)
-        g.add_node(2)
-        g.add_node(3)
         # undirected
         g.add_edge_undirected(1, 2, 17)
         g.add_edge_undirected(1, 3, 34)
@@ -145,6 +148,10 @@ class GraphTest(ut.TestCase):
         self.assertEqual(g.edge_exists(3, 2), False)
         self.assertEqual(g.get_neighbors(1), {2: 17, 3: 34})
         self.assertEqual(g.get_neighbors(2), {1: 17})
+
+        g.create_adjlist()
+        self.assertEqual(g.adjlist, {1: {2: 17, 3: 34}, 2: {1: 17}, 3: {1: 34}})
+
 
     def test_tagwa_graph(self):
         # graph = {"a": {"b": 2, "c": 1},

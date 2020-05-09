@@ -23,8 +23,8 @@ class BB:
             return 0
 
     # select from F the (v,path_from_start) where the cost between s and v is the lowest
-    def select_v_with_lowest_cost(self,f):
-        minNode = None
+    def select_v_with_lowest_cost(self, f):
+        minNode = next(iter(f))
         minCost = sys.maxsize
         for node in f.keys():
             if minCost > f[node][1]:
@@ -171,7 +171,8 @@ def main():
              "b": {"d":1},
              "c": {"a":1,"b":1,"d":3,"e":7},
              "d": {"f":2,"c":3},
-             "e": {"c":7}
+             "e": {"c":7},
+             "f": {"d": 2}
             }
 
     graph2 = {"a": {"b": 3, "c": 5},
@@ -179,13 +180,13 @@ def main():
               "c": {"a": 5, "e": 3},
               "d": {"f": 2, "e": 1, "b":1},
               "e": {"c": 3,"b":2, "d":1, "f":4},
-              "f": {"g":1},
-              "g": {"f":1}
+              "f": {"g": 1},
+              "g": {"f": 1}
              }
     min = 4
     start = "a"
     end = "g"
-    bb = BB(graph2, min, start, end)
+    bb = BB(graph, min, start, end)
     print(bb.shortestPath())
 
 if __name__ == "__main__":
