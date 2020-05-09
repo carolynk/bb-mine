@@ -37,12 +37,13 @@ class BB:
             pathFromStart = [a]
         else:
             pathFromStart = f[node][0]
-        # print(pathFromStart)
+        print(pathFromStart)
         configration =[]
         for neighbour in self.graph[node].keys():
             # print(neighbour)
             temp = list.copy(pathFromStart)
-            temp.insert(0,node)
+            if node not in temp:
+                temp.insert(0,node)
             if neighbour not in pathFromStart:
                 temp.append(neighbour)
                 configration.append(temp)
@@ -65,7 +66,7 @@ class BB:
     def shortestPath(self):
         F = defaultdict(lambda :[]) #contains {v:path_from_start,cost}
         F[self.start_node] = [[],sys.maxsize]
-        b = defaultdict(lambda :1)
+        b = ["",[],sys.maxsize] # [lastNode,pathFromStart,cost]}
         visited = defaultdict(lambda :[]) #contains {v:[path_from_start,cost]}
         while F is not None:
             # select from F the (v,path_from_start) where the cost between s and v is the lowest
@@ -103,22 +104,25 @@ class BB:
                 else:
                     check = "continue"
 
-                # print("check",check)
+                print("check",check)
                 if check == "solution found":
-                    if c < b[2]:
-                        b = {lastNodeInpathFromStart, pathFromStart, c}
-                    else:
-                        # discard configuration
-                        configurations.remove(pathFromStart)
-                        break
-                    F = None
+                    F =None
                 elif check == "dead end":
-                        # discard configuration
-                        configurations.remove(pathFromStart)
-                        break
+                    # discard configuration
+                    configurations.remove(pathFromStart)
+
+                elif c < b[2]:
+                    b = [lastNodeInpathFromStart, pathFromStart, c]
+                # else:
+                #     # discard configuration
+                #     configurations.remove(pathFromStart)
+                #     break
+
+
 
                 else:
                     print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
+                    print(b[2])
                     if self.lowerBound(lastNodeInpathFromStart, pathFromStart) <= b[2]:
                         print("here")
                         c = self.lowerBound(lastNodeInpathFromStart, pathFromStart)
