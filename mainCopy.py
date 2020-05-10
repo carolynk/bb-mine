@@ -26,10 +26,10 @@ class BB:
 
     # select from F the (v,path_from_start) where the cost between s and v is the lowest
     def select_v_with_lowest_cost(self, f):
-
+        minNode = None
         minCost = sys.maxsize
         for node in f.keys():
-            minNode = node
+
             if minCost > f[node][1]:
                 minNode = node
                 minCost = f[node][1]
@@ -75,13 +75,13 @@ class BB:
         b = ["",[],sys.maxsize] # [lastNode,pathFromStart,cost]}
         visited = defaultdict(lambda :[]) #contains {v:[path_from_start,cost]}
         while F is not None:
-            print("f====",F)
+            # print("f====",F)
             # select from F the (v,path_from_start) where the cost between s and v is the lowest
             minv = self.select_v_with_lowest_cost(F)
-            print(minv)
+            # print(minv)
             # Expand
             configurations=self.expand(minv,F)
-            print(configurations)
+            # print(configurations)
             # if we arrived to dead end
             if not configurations:
                 del F[minv]
@@ -94,7 +94,7 @@ class BB:
                     visited[minv].append(F[minv][0])  # add pathFromStart
                     visited[minv].append(F[minv][1])  # add cost
 
-                    print("visited", visited)
+                    # print("visited", visited)
 
                 # delete it because we dont want it to expand again
                 if minv in F.keys():
@@ -110,8 +110,8 @@ class BB:
                 else:
                     check = "continue"
                     # update the node
-                    visited[lastNodeInpathFromStart] = [pathFromStart,c]
-                print(pathFromStart)
+                    # visited[lastNodeInpathFromStart] = [pathFromStart,c]
+                # print(pathFromStart)
 
                 if check == "solution found":
                     print("check", check)
@@ -125,9 +125,10 @@ class BB:
 
 
                 else:
-                    print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
+                    # print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
                     if self.lowerBound(lastNodeInpathFromStart, pathFromStart) < b[2] :
                         cost = self.lowerBound(lastNodeInpathFromStart, pathFromStart)
+                        # if lastNodeInpathFromStart not in F.keys():
                         F[lastNodeInpathFromStart]= [pathFromStart, cost]
 
                 # print ("==================================================")
@@ -180,15 +181,18 @@ class Experiments:
 
         g2.create_adjlist()
         # value = {k: g2.adjlist[k] for k in set(g2.adjlist) }
-        # print(value)
+        print(graph2)
+        print(g2.adjlist)
         print(g2.adjlist == graph2)
         min = 4
         start = "a"
         end = "g"
         # print(type(g2.adjlist))
         # g3 = dict.copy(g2.adjlist)
+        b = BB(graph2, min, start, end)
+        print("graph",b.shortestPath())
         b = BB(g2.adjlist, min, start, end)
-        print(b.shortestPath())
+        print("adjlist",b.shortestPath())
 
     def exp(self):
         pass
