@@ -1,6 +1,3 @@
-# TODO: the problem is when the best cost is less than the current and the best already expanded
-# it will keep choosing the same node to expand
-
 from graph import Node, Graph
 import unittest as ut
 import matplotlib.pyplot as plt
@@ -63,11 +60,6 @@ class BB:
             distances.append(self.graph[path[i]][path[i+1]])
 
         return distances
-
-
-
-
-
 
     def shortestPath(self):
         F = defaultdict(lambda :[]) #contains {v:path_from_start,cost}
@@ -143,6 +135,10 @@ class BB:
         return cost
 
 class Experiments:
+    def __init__(self):
+        self.totalTime = []
+
+    def testTinyGreph(self):
     def testTinyGraph(self, min):
         graph2 = {"a": {"b": 3, "c": 5},
                   "b": {"a":3,"d": 1, "e": 2},
@@ -209,16 +205,20 @@ class Experiments:
     def exp(self):
         pass
 
-
     def createSamples(self, size):
         pass
 
     # function to do the time analysis
-    def timer(self, sample_set):
+    def timer(self, bb):
         timer_on = time.time()
         # calculate shortest path for sample set
 
+        bb.shortestPath()
         timer_off = time.time()
+        self.totalTime.append(timer_off - timer_on)
+
+        timer_off = time.time()
+
         return timer_off - timer_on
 
     # function to plot
@@ -263,15 +263,27 @@ class BBTest(ut.TestCase):
         pass
 
 def main():
-    # graph = {"a": {"b":2,"c":1},
-    #          "b": {"d":1},
-    #          "c": {"a":1,"b":1,"d":3,"e":7},
-    #          "d": {"f":2,"c":3},
-    #          "e": {"c":7},
-    #          "f": {"d": 2}
-    #         }
-    #
+    graph = {"a": {"b":2,"c":1},
+             "b": {"d":1},
+             "c": {"a":1,"b":1,"d":3,"e":7},
+             "d": {"f":2,"c":3},
+             "e": {"c":7},
+             "f": {"d": 2}
+            }
 
+    min = 4
+    start = "a"
+    end = "f"
+
+    #test = Experiments()
+    #test.testTinyGreph()
+    #test.density(gra)
+
+    bb = BB(graph, min, start, end)
+    getTime = Experiments()
+    getTime.timer(bb)
+    #print(bb.shortestPath())
+    print("Time", getTime.totalTime)
     # min = 4
     # start = "a"
     # end = "g"
