@@ -113,28 +113,39 @@ class Graph:
         # return 2.0 * E / (V * (V - 1))
         pass
 
-    def generate_graph(self, n, m, max_w):
+    def generate_connected_graph(self, n, m, max_w):
         """ Generate an Erdős–Rényi random graph of n nodes, and m edges """
 
         for i in range(1, n + 1):
             self.add_node(i)
 
+        id1 = random.randint(1, n)
         for i in range(1, m + 1):
-            id1 = random.randint(1, n)
             id2 = random.randint(1, n)
             w = random.randint(1, max_w)
-            while id1 == id2 or self.edge_exists(id1, id2):
-                redo = random.randint(1, 2)
-                if redo == 1:
-                    id1 = random.randint(1, n)
+            # checks
+            needs_redo = True
+            while needs_redo:
+                id2 = random.randint(1, n)
+                if id1 == id2:
+                    needs_redo = True
+                elif self.edge_exists(id1, id2):
+                    needs_redo = True
                 else:
-                    id2 = random.randint(1, n)
+                    needs_redo = False
             self.add_edge_undirected(id1, id2, w)
+
+            # self.adjacency_list[id1] = self.get_node(id1).edges
+            id1 = id2
         return self
 
     def create_adjacency_list(self):
         for id_ in self.nodes:
             self.adjacency_list[id_] = self.get_node(id_).edges
+        # delete nodes with no connections
+        for x in list(self.adjacency_list.keys()):
+            if not self.adjacency_list[x]:
+                del self.adjacency_list[x]
 
 
 class GraphTest(ut.TestCase):
@@ -159,7 +170,7 @@ class GraphTest(ut.TestCase):
         """ Test methods for a random graph """
 
         g_rand = Graph()
-        g_rand.generate_graph(n, m, 50)
+        g_rand.generate_connected_graph(n, m, 50)
         self.assertEqual(len(g_rand.nodes), n)
 
 
@@ -168,12 +179,12 @@ if __name__ == '__main__':
     gt.test_tiny_graph()
 
     # Random Graph Test
-    num_of_nodes = 100
+    num_of_nodes = 10
     num_of_edges = int(math.log(num_of_nodes, 2))
     gt.test_random_graph(num_of_nodes, num_of_edges)
 
     g5 = Graph()
-    g5.generate_graph(num_of_nodes, num_of_edges, 50)
+    g5.generate_connected_graph(num_of_nodes, num_of_edges, 50)
     g5.create_adjacency_list()
     print(g5.adjacency_list)
     print("All tests passed")
