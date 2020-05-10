@@ -194,6 +194,13 @@ class Experiments:
         b = BB(g2.adjlist, min, start, end)
         print("adjlist",b.shortestPath())
 
+    def density(self,g,E):
+        """ method to calculate the density of a graph """
+
+        V = len(g.keys())
+        # E = len(self.edges())
+        return 2.0 * E / (V * (V - 1))
+
     def exp(self):
         pass
 
@@ -240,6 +247,7 @@ def main():
     # print(bb.shortestPath())
     test = Experiments()
     test.testTinyGreph()
+    test.density(gra)
 
 if __name__ == "__main__":
   main()
