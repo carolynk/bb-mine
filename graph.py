@@ -40,7 +40,7 @@ class Graph:
 
     Attributes
     ----------
-    adjlist : dictionary
+    adjacency_list : dictionary
         a dictionary of ids : nodes in the graph
 
     Methods
@@ -69,7 +69,7 @@ class Graph:
         if nodes is None:
             nodes = {}
         self.nodes = nodes
-        self.adjlist = {}
+        self.adjacency_list = {}
 
     def add_node(self, id_):
         """ Adds nodes by id """
@@ -113,7 +113,7 @@ class Graph:
         # return 2.0 * E / (V * (V - 1))
         pass
 
-    def generate_graph(self, n, m, maxw):
+    def generate_graph(self, n, m, max_w):
         """ Generate an Erdős–Rényi random graph of n nodes, and m edges """
 
         for i in range(1, n + 1):
@@ -122,7 +122,7 @@ class Graph:
         for i in range(1, m + 1):
             id1 = random.randint(1, n)
             id2 = random.randint(1, n)
-            w = random.randint(1, maxw)
+            w = random.randint(1, max_w)
             while id1 == id2 or self.edge_exists(id1, id2):
                 redo = random.randint(1, 2)
                 if redo == 1:
@@ -132,9 +132,9 @@ class Graph:
             self.add_edge_undirected(id1, id2, w)
         return self
 
-    def create_adjlist(self):
+    def create_adjacency_list(self):
         for id_ in self.nodes:
-            self.adjlist[id_] = self.get_node(id_).edges
+            self.adjacency_list[id_] = self.get_node(id_).edges
 
 
 class GraphTest(ut.TestCase):
@@ -152,8 +152,8 @@ class GraphTest(ut.TestCase):
         self.assertEqual(g.get_neighbors(1), {2: 17, 3: 34})
         self.assertEqual(g.get_neighbors(2), {1: 17})
 
-        g.create_adjlist()
-        self.assertEqual(g.adjlist, {1: {2: 17, 3: 34}, 2: {1: 17}, 3: {1: 34}})
+        g.create_adjacency_list()
+        self.assertEqual(g.adjacency_list, {1: {2: 17, 3: 34}, 2: {1: 17}, 3: {1: 34}})
 
     def test_random_graph(self, n, m):
         """ Test methods for a random graph """
@@ -174,6 +174,6 @@ if __name__ == '__main__':
 
     g5 = Graph()
     g5.generate_graph(num_of_nodes, num_of_edges, 50)
-    g5.create_adjlist()
-    print(g5.adjlist)
+    g5.create_adjacency_list()
+    print(g5.adjacency_list)
     print("All tests passed")

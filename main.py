@@ -150,20 +150,20 @@ class Experiments:
         g2.add_edge_undirected("f", "g", 1)
         g2.add_edge_undirected("g", "f", 1)
 
-        g2.create_adjlist()
-        # value = {k: g2.adjlist[k] for k in set(g2.adjlist) }
+        g2.create_adjacency_list()
+        # value = {k: g2.adjacency_list[k] for k in set(g2.adjacency_list) }
         # print(graph2)
-        # print(g2.adjlist)
-        # print(g2.adjlist == graph2)
+        # print(g2.adjacency_list)
+        # print(g2.adjacency_list == graph2)
         start = "a"
         end = "g"
-        # print(type(g2.adjlist))
-        # g3 = dict.copy(g2.adjlist)
+        # print(type(g2.adjacency_list))
+        # g3 = dict.copy(g2.adjacency_list)
         # b = BB(graph2, min, start, end)
         # print("graph",b.shortestPath())
-        b = BB(g2.adjlist, min, start, end)
+        b = BB(g2.adjacency_list, min, start, end)
         return b
-        # print("adjlist", b.shortestPath())
+        # print("adjacency_list", b.shortestPath())
 
     def trials(self, n):
         """ Takes number of trials and expierment"""
