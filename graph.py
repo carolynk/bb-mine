@@ -21,12 +21,12 @@ class Node:
         self.id = id_
         self.edges = {}
 
-    # adds a neighbor node id
     def add_neighbor(self, nid, w):
+        """ adds a neighbor node id """
         self.edges[nid] = w
 
     def has_neighbor(self, nid):
-      return nid in self.edges.keys()
+        return nid in self.edges.keys()
 
     def get_weight(self):
         pass
@@ -71,13 +71,11 @@ class Graph:
         self.nodes = nodes
         self.adjlist = {}
 
-
-    # Adds a node by id
     def add_node(self, id_):
+        """ Adds nodes by id """
         new_node = Node(id_)
-        self.nodes[id_] = (new_node)
+        self.nodes[id_] = new_node
 
-    # Gets a node by id
     def get_node(self, id_):
         """ Gets a node by id """
         if id_ in self.nodes.keys():
@@ -122,11 +120,9 @@ class Graph:
             self.add_node(i)
 
         for i in range(1, m + 1):
-            w = random.randint(1, maxw)
-
-        for i in range(1, m + 1):
             id1 = random.randint(1, n)
             id2 = random.randint(1, n)
+            w = random.randint(1, maxw)
             while id1 == id2 or self.edge_exists(id1, id2):
                 redo = random.randint(1, 2)
                 if redo == 1:
@@ -139,7 +135,6 @@ class Graph:
     def create_adjlist(self):
         for id_ in self.nodes:
             self.adjlist[id_] = self.get_node(id_).edges
-
 
 
 class GraphTest(ut.TestCase):
@@ -160,23 +155,12 @@ class GraphTest(ut.TestCase):
         g.create_adjlist()
         self.assertEqual(g.adjlist, {1: {2: 17, 3: 34}, 2: {1: 17}, 3: {1: 34}})
 
-
-    def test_tagwa_graph(self):
-        # graph = {"a": {"b": 2, "c": 1},
-        #          "b": {"d": 1},
-        #          "c": {"a": 1, "b": 1, "d": 3, "e": 7},
-        #          "d": {"f": 2, "c": 3},
-        #          "e": {"c": 7}
-        #          }
-
-        g1 = Graph()
-
-
     def test_random_graph(self, n, m):
         """ Test methods for a random graph """
 
         g_rand = Graph()
         g_rand.generate_graph(n, m, 50)
+        self.assertEqual(len(g_rand.nodes), n)
 
 
 if __name__ == '__main__':
@@ -184,7 +168,7 @@ if __name__ == '__main__':
     gt.test_tiny_graph()
 
     # Random Graph Test
-    num_of_nodes = 10
+    num_of_nodes = 100
     num_of_edges = int(math.log(num_of_nodes, 2))
     gt.test_random_graph(num_of_nodes, num_of_edges)
 
