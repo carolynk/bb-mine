@@ -7,4 +7,7 @@
     <orderEntry type="module" module-name="python" />
     <orderEntry type="module" module-name="lastAssignment" />
   </component>
+  <component name="PyDocumentationSettings">
+    <option name="renderExternalDocumentation" value="true" />
+  </component>
 </module>

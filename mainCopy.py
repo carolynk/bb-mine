@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import sys
 from collections import defaultdict
 import time
+import numpy as np
+
 import math
 
 class BB:
@@ -15,7 +17,7 @@ class BB:
         self.end_node = e
 
     # calculate cost
-    def calc_cost(self,path_from_start):
+    def calc_cost(self, path_from_start):
         if path_from_start is not None:
             return self.lowerBound(path_from_start[-1],path_from_start)
         else:
@@ -36,10 +38,10 @@ class BB:
 
 
     # expand configuration
-    def expand(self,node,f):
+    def expand(self, node, f):
 
         if f[node][0] is None:
-            pathFromStart = [a]
+            pathFromStart = []
         else:
             pathFromStart = f[node][0]
 
@@ -138,7 +140,6 @@ class Experiments:
     def __init__(self):
         self.totalTime = []
 
-    def testTinyGreph(self):
     def testTinyGraph(self, min):
         graph2 = {"a": {"b": 3, "c": 5},
                   "b": {"a":3,"d": 1, "e": 2},
@@ -224,20 +225,20 @@ class Experiments:
     # function to plot
     def plotting(self, mins, t):
         # setup the plot
+        all_data = []
         for min in mins:
-            all_data = []
             runtimes = []
+            data_point = []
             for i in range(0, t):
                 runtimes.append(3)
-                all_data.append(runtimes)
-            all_data.append(all_data)
-            means = []
-            sd = []
-            for x in all_data:
-                # get means
-                means.append(sum(x) / t)
-                # get sd
-                sd.append(np.std(x))
+            all_data.append(runtimes)
+        means = []
+        sd = []
+        for x in all_data:
+            # get means
+            means.append(sum(x) / t)
+            # get sd
+            sd.append(np.std(x))
         plt.errorbar(mins, means, sd, linestyle='-', marker='^', label=min)
 
         plt.xlabel('Min')
@@ -263,11 +264,11 @@ class BBTest(ut.TestCase):
         pass
 
 def main():
-    graph = {"a": {"b":2,"c":1},
-             "b": {"d":1},
-             "c": {"a":1,"b":1,"d":3,"e":7},
-             "d": {"f":2,"c":3},
-             "e": {"c":7},
+    graph = {"a": {"b": 2,"c": 1},
+             "b": {"d": 1},
+             "c": {"a": 1, "b": 1, "d": 3, "e": 7},
+             "d": {"f": 2, "c": 3},
+             "e": {"c": 7},
              "f": {"d": 2}
             }
 
