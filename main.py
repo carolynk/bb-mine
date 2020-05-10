@@ -1,3 +1,5 @@
+import random
+
 from graph import Graph
 import unittest as ut
 import matplotlib.pyplot as plt
@@ -247,8 +249,24 @@ def main():
     test.trials(10)
     test.plot_by_min([1, 2, 3, 4], 10)
 
+    num_of_nodes = 10
+    num_of_edges = int(num_of_nodes * math.log(num_of_nodes, 2))
+
+    g5 = Graph()
+    g5.generate_connected_graph(num_of_nodes, num_of_edges, 50)
+    g5.create_adjacency_list()
+    print(g5.adjacency_list)
+
+    min_ = 2
+    start = random.choice(list(g5.adjacency_list.keys()))
+    end = random.choice(list(g5.adjacency_list.keys()))
+    bb1 = BB(g5.adjacency_list, min_, start, end)
+    print(bb1.shortest_path())
+
+
+
 
 if __name__ == "__main__":
     main()
-    num_of_nodes = 3
-    num_of_edges = int(num_of_nodes * math.log(num_of_nodes, 2))
+
+
