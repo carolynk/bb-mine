@@ -107,6 +107,14 @@ class Graph:
         else:
             return self.get_node(id1).has_neighbor(id2)
 
+    def density(self):
+        """ method to calculate the density of a graph """
+        #
+        # V = len(g.keys())
+        # # E = len(self.edges())
+        # return 2.0 * E / (V * (V - 1))
+        pass
+
     def generate_graph(self, n, m, maxw):
         """ Generate an Erdős–Rényi random graph of n nodes, and m edges """
 
