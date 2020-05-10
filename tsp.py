@@ -13,13 +13,10 @@ class convert:
         for node1 in keys:
             for node2 in keys:
                 if node2 in self.graph[node1].keys():
-
                     self.matrix[i][j] = self.graph[node1][node2]
                 j += 1
             j = 0
             i += 1
-
-
 
 
 if __name__ == '__main__':
