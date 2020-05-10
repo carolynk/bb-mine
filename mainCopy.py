@@ -74,7 +74,7 @@ class BB:
             minv = self.select_v_with_lowest_cost(F)
             # print(minv)
             # Expand
-            configurations=self.expand(minv,F)
+            configurations = self.expand(minv, F)
             # print(configurations)
             # if we arrived to dead end
             if not configurations:
@@ -111,7 +111,7 @@ class BB:
                     print("check", check)
                     if c < b[2]:
                         b = [lastNodeInpathFromStart, pathFromStart, c]
-                    F =None
+                    # F = None
                     return pathFromStart
                 elif check == "dead end":
                     # discard configuration
@@ -142,11 +142,11 @@ class Experiments:
 
     def testTinyGraph(self, min):
         graph2 = {"a": {"b": 3, "c": 5},
-                  "b": {"a":3,"d": 1, "e": 2},
+                  "b": {"a": 3, "d": 1, "e": 2},
                   "c": {"a": 5, "e": 3},
                   "d": {"b": 1, "f": 2, "e": 1},
-                  "e": { "b": 2, "c": 3, "d": 1, "f": 4},
-                  "f": {"d" : 2, "g": 1,"e" : 4},
+                  "e": {"b": 2, "c": 3, "d": 1, "f": 4},
+                  "f": {"d": 2, "g": 1, "e": 4},
                   "g": {"f": 1}
                   }
         print(type(graph2))
@@ -188,7 +188,8 @@ class Experiments:
         # b = BB(graph2, min, start, end)
         # print("graph",b.shortestPath())
         b = BB(g2.adjlist, min, start, end)
-        # print("adjlist",b.shortestPath())
+        return b
+        # print("adjlist", b.shortestPath())
 
     def density(self,g,E):
         """ method to calculate the density of a graph """
@@ -223,14 +224,14 @@ class Experiments:
         return timer_off - timer_on
 
     # function to plot
-    def plotting(self, mins, t):
+    def plotting(self, bb, mins, t):
         # setup the plot
         all_data = []
         for min in mins:
             runtimes = []
-            data_point = []
             for i in range(0, t):
-                runtimes.append(3)
+                b = self.testTinyGraph(min)
+                runtimes.append(self.timer(b))
             all_data.append(runtimes)
         means = []
         sd = []
@@ -239,7 +240,7 @@ class Experiments:
             means.append(sum(x) / t)
             # get sd
             sd.append(np.std(x))
-        plt.errorbar(mins, means, sd, linestyle='-', marker='^', label=min)
+        plt.errorbar(mins, means, sd, linestyle='-', marker='^')
 
         plt.xlabel('Min')
         plt.ylabel('Runtime')
@@ -295,7 +296,7 @@ def main():
     # test.density(gra)
 
     test.trials(10)
-    test.plotting([2,3,4], 10)
+    test.plotting(bb, [1, 2, 3, 4], 10)
 
 
 if __name__ == "__main__":
