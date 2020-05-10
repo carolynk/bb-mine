@@ -143,7 +143,7 @@ class BB:
         return cost
 
 class Experiments:
-    def testTinyGreph(self):
+    def testTinyGraph(self, min):
         graph2 = {"a": {"b": 3, "c": 5},
                   "b": {"a":3,"d": 1, "e": 2},
                   "c": {"a": 5, "e": 3},
@@ -181,18 +181,17 @@ class Experiments:
 
         g2.create_adjlist()
         # value = {k: g2.adjlist[k] for k in set(g2.adjlist) }
-        print(graph2)
-        print(g2.adjlist)
-        print(g2.adjlist == graph2)
-        min = 4
+        # print(graph2)
+        # print(g2.adjlist)
+        # print(g2.adjlist == graph2)
         start = "a"
         end = "g"
         # print(type(g2.adjlist))
         # g3 = dict.copy(g2.adjlist)
-        b = BB(graph2, min, start, end)
-        print("graph",b.shortestPath())
+        # b = BB(graph2, min, start, end)
+        # print("graph",b.shortestPath())
         b = BB(g2.adjlist, min, start, end)
-        print("adjlist",b.shortestPath())
+        # print("adjlist",b.shortestPath())
 
     def density(self,g,E):
         """ method to calculate the density of a graph """
@@ -201,8 +200,15 @@ class Experiments:
         # E = len(self.edges())
         return 2.0 * E / (V * (V - 1))
 
+    def trials(self, n):
+        """ Takes number of trials and expierment"""
+        for i in range(1, n):
+            self.testTinyGraph(2)
+
+
     def exp(self):
         pass
+
 
     def createSamples(self, size):
         pass
@@ -216,15 +222,41 @@ class Experiments:
         return timer_off - timer_on
 
     # function to plot
-    def plotting(x, y, title, x_axis, y_axis):
+    def plotting(self, mins, t):
         # setup the plot
-        plt.plot(x, y, color='green', linestyle='dashed', linewidth=3,
-             marker='o', markerfacecolor='blue', markersize=12)
+        for min in mins:
+            all_data = []
+            runtimes = []
+            for i in range(0, t):
+                runtimes.append(3)
+                all_data.append(runtimes)
+            all_data.append(all_data)
+            means = []
+            sd = []
+            for x in all_data:
+                # get means
+                means.append(sum(x) / t)
+                # get sd
+                sd.append(np.std(x))
+        plt.errorbar(mins, means, sd, linestyle='-', marker='^', label=min)
 
-        plt.xlabel(x_axis)
-        plt.ylabel(y_axis)
-        plt.title(title)
+        plt.xlabel('Min')
+        plt.ylabel('Runtime')
+        plt.title('BB')
+
+        plt.legend()
         plt.show()
+
+
+
+
+        # plt.plot(x, y, color='green', linestyle='dashed', linewidth=3,
+        #      marker='o', markerfacecolor='blue', markersize=12)
+        #
+        # plt.xlabel(x_axis)
+        # plt.ylabel(y_axis)
+        # plt.title(title)
+        # plt.show()
 
 class BBTest(ut.TestCase):
     def test(self):
@@ -246,8 +278,12 @@ def main():
     # bb = BB(graph2, min, start, end)
     # print(bb.shortestPath())
     test = Experiments()
-    test.testTinyGreph()
-    test.density(gra)
+    # test.testTinyGraph()
+    # test.density(gra)
+
+    test.trials(10)
+    test.plotting([2,3,4], 10)
+
 
 if __name__ == "__main__":
   main()
