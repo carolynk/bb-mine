@@ -26,9 +26,10 @@ class BB:
 
     # select from F the (v,path_from_start) where the cost between s and v is the lowest
     def select_v_with_lowest_cost(self, f):
-        minNode = next(iter(f))
+
         minCost = sys.maxsize
         for node in f.keys():
+            minNode = node
             if minCost > f[node][1]:
                 minNode = node
                 minCost = f[node][1]
@@ -74,14 +75,16 @@ class BB:
         b = ["",[],sys.maxsize] # [lastNode,pathFromStart,cost]}
         visited = defaultdict(lambda :[]) #contains {v:[path_from_start,cost]}
         while F is not None:
+            print("f====",F)
             # select from F the (v,path_from_start) where the cost between s and v is the lowest
             minv = self.select_v_with_lowest_cost(F)
-
+            print(minv)
             # Expand
             configurations=self.expand(minv,F)
+            print(configurations)
             # if we arrived to dead end
             if not configurations:
-                F[minv][1]= sys.maxsize
+                del F[minv]
 
             for pathFromStart in configurations:
                 lastNodeInpathFromStart = pathFromStart[-1]
@@ -91,9 +94,9 @@ class BB:
                     visited[minv].append(F[minv][0])  # add pathFromStart
                     visited[minv].append(F[minv][1])  # add cost
 
-                    # print("visited", visited)
+                    print("visited", visited)
 
-                # delete it became  dont want it to expand again
+                # delete it because we dont want it to expand again
                 if minv in F.keys():
                     del F[minv]
                 # calculate cost for v
@@ -108,7 +111,7 @@ class BB:
                     check = "continue"
                     # update the node
                     visited[lastNodeInpathFromStart] = [pathFromStart,c]
-
+                print(pathFromStart)
 
                 if check == "solution found":
                     print("check", check)
@@ -122,7 +125,7 @@ class BB:
 
 
                 else:
-                    # print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
+                    print("lower bound",self.lowerBound(lastNodeInpathFromStart, pathFromStart))
                     if self.lowerBound(lastNodeInpathFromStart, pathFromStart) < b[2] :
                         cost = self.lowerBound(lastNodeInpathFromStart, pathFromStart)
                         F[lastNodeInpathFromStart]= [pathFromStart, cost]
@@ -139,6 +142,54 @@ class BB:
         return cost
 
 class Experiments:
+    def testTinyGreph(self):
+        graph2 = {"a": {"b": 3, "c": 5},
+                  "b": {"a":3,"d": 1, "e": 2},
+                  "c": {"a": 5, "e": 3},
+                  "d": {"b": 1, "f": 2, "e": 1},
+                  "e": { "b": 2, "c": 3, "d": 1, "f": 4},
+                  "f": {"d" : 2, "g": 1,"e" : 4},
+                  "g": {"f": 1}
+                  }
+        print(type(graph2))
+        g2 = Graph()
+
+        # g2.add_node('a')
+        # g2.add_node('b')
+        # g2.add_node('c')
+        # g2.add_node('d')
+        # g2.add_node('e')
+        # g2.add_node('f')
+        # g2.add_node('g')
+
+        g2.add_edge_undirected("a", "b", 3)
+        g2.add_edge_undirected("a", "c", 5)
+        g2.add_edge_undirected("b", "d", 1)
+        g2.add_edge_undirected("b", "e", 3)
+        g2.add_edge_undirected("c", "a", 5)
+        g2.add_edge_undirected("c", "e", 3)
+        g2.add_edge_undirected("d", "f", 2)
+        g2.add_edge_undirected("d", "e", 1)
+        g2.add_edge_undirected("d", "b", 1)
+        g2.add_edge_undirected("e", "c", 3)
+        g2.add_edge_undirected("e", "b", 2)
+        g2.add_edge_undirected("e", "d", 1)
+        g2.add_edge_undirected("e", "f", 4)
+        g2.add_edge_undirected("f", "g", 1)
+        g2.add_edge_undirected("g", "f", 1)
+
+        g2.create_adjlist()
+        # value = {k: g2.adjlist[k] for k in set(g2.adjlist) }
+        # print(value)
+        print(g2.adjlist == graph2)
+        min = 4
+        start = "a"
+        end = "g"
+        # print(type(g2.adjlist))
+        # g3 = dict.copy(g2.adjlist)
+        b = BB(g2.adjlist, min, start, end)
+        print(b.shortestPath())
+
     def exp(self):
         pass
 
@@ -169,27 +220,22 @@ class BBTest(ut.TestCase):
         pass
 
 def main():
-    graph = {"a": {"b":2,"c":1},
-             "b": {"d":1},
-             "c": {"a":1,"b":1,"d":3,"e":7},
-             "d": {"f":2,"c":3},
-             "e": {"c":7},
-             "f": {"d": 2}
-            }
+    # graph = {"a": {"b":2,"c":1},
+    #          "b": {"d":1},
+    #          "c": {"a":1,"b":1,"d":3,"e":7},
+    #          "d": {"f":2,"c":3},
+    #          "e": {"c":7},
+    #          "f": {"d": 2}
+    #         }
+    #
 
-    graph2 = {"a": {"b": 3, "c": 5},
-              "b": {"d": 1,"e":2},
-              "c": {"a": 5, "e": 3},
-              "d": {"f": 2, "e": 1, "b":1},
-              "e": {"c": 3,"b":2, "d":1, "f":4},
-              "f": {"g": 1},
-              "g": {"f": 1}
-             }
-    min = 4
-    start = "a"
-    end = "g"
-    bb = BB(graph2, min, start, end)
-    print(bb.shortestPath())
+    # min = 4
+    # start = "a"
+    # end = "g"
+    # bb = BB(graph2, min, start, end)
+    # print(bb.shortestPath())
+    test = Experiments()
+    test.testTinyGreph()
 
 if __name__ == "__main__":
   main()
