@@ -2,7 +2,7 @@ import unittest as ut
 import random
 import math
 
-from scipy.special import comb
+# from scipy.special import comb
 
 
 class Node:
