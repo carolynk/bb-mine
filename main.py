@@ -37,7 +37,6 @@ class BB:
 
     # expand configuration
     def expand(self, node, f):
-
         if f[node][0] is None:
             path_from_start = []
         else:
@@ -62,36 +61,50 @@ class BB:
         return distances
 
     def shortest_path(self):
+        if self.start_node not in self.graph.keys():
+            print("start node not in graph")
+            return
+        if self.start_node not in self.graph.keys():
+            print("end nod not in graph")
+            return
         f = defaultdict(lambda: [])  # contains {v:path_from_start, cost}
         f[self.start_node] = [[], 1.0]
         b = ["", [], sys.maxsize]  # [lastNode, path_from_start,cost]}
         visited = defaultdict(lambda: [])  # contains {v:[path_from_start, cost]}
         while f is not None:
-            # print("f====",f)
+            print("f====",f)
             # select from f the (v,path_from_start) where the cost between s and v is the lowest
             min_v = self.select_v_with_lowest_cost(f)
-            # print(min_v)
+            print(min_v)
             # Expand
             configurations = self.expand(min_v, f)
-            # print(configurations)
+            print(configurations)
             # if we arrived to dead end
             if not configurations:
                 del f[min_v]
 
             for path_from_start in configurations:
                 last_node_in_path_from_start = path_from_start[-1]
+                # calculate cost for v
+                c = self.calc_cost(path_from_start)
                 # check if this node visited before or not
                 if min_v not in visited.keys():
                     visited[min_v] = []
-                    visited[min_v].append(f[min_v][0])  # add path_from_start
-                    visited[min_v].append(f[min_v][1])  # add cost
+                    visited[min_v].append(path_from_start)  # add path_from_start
+                    visited[min_v].append(c)  # add cost
                     # print("visited", visited)
 
-                # delete it because we dont want it to expand again
+                # update best if it contain path from start that already discarded
+                flag = False
+                for i in f.values():
+                    if b[1] is i[0]:
+                        flag =True
+                if flag is False:
+                    b = ["", [], sys.maxsize]
+                # delete the node because we dont want it to expand again
+                print("b",b)
                 if min_v in f.keys():
                     del f[min_v]
-                # calculate cost for v
-                c = self.calc_cost(path_from_start)
 
                 if visited[last_node_in_path_from_start] != [] and visited[last_node_in_path_from_start][1] < c:
                     # print("visit cost ,", last_node_in_path_from_start, " ", visited[last_node_in_path_from_start][1])
@@ -100,15 +113,12 @@ class BB:
                     check = "solution found"
                 else:
                     check = "continue"
-                    # update the node
-                    # visited[last_node_in_path_from_start] = [path_from_start,c]
-                # print(path_from_start)
 
                 if check == "solution found":
-                    # print("check", check)
-                    # if c < b[2]:
-                    #     b = [last_node_in_path_from_start, path_from_start, c]
-                    # F = None
+                    print("check", check)
+                    if c < b[2]:
+                        b = [last_node_in_path_from_start, path_from_start, c]
+                    F = None
                     return path_from_start
                 elif check == "dead end":
                     # discard configuration
@@ -119,6 +129,7 @@ class BB:
                         cost = self.lower_bound(last_node_in_path_from_start, path_from_start)
                         # if last_node_in_path_from_start not in F.keys():
                         f[last_node_in_path_from_start] = [path_from_start, cost]
+                        b = [last_node_in_path_from_start, path_from_start, cost]
                 # print ("==================================================")
         return b
 
@@ -235,19 +246,31 @@ def main():
              "e": {"c": 7},
              "f": {"d": 2}
              }
-    min_ = 4
-    start = "a"
-    end = "f"
+    min_ = 5
+    start = 1
+    end = 10
 
-    bb = BB(graph, min_, start, end)
-    get_time = Experiments()
-    get_time.timer(bb)
-    # print(bb.shortestPath())
+    test ={1: {6: 34, 7: 31, 5: 20, 8: 15, 4: 7, 2: 32},
+           2: {7: 39, 8: 37, 3: 31, 5: 37, 1: 32, 6: 28, 4: 32},
+           3: {4: 25, 8: 11, 7: 43, 5: 9, 2: 31, 6: 34, 10: 21},
+           4: {3: 25, 9: 18, 5: 12, 1: 7, 6: 32, 2: 32},
+           5: {10: 31, 3: 9, 2: 37, 7: 2, 6: 40, 1: 20, 8: 49, 4: 12},
+           6: {9: 31, 1: 34, 8: 26, 5: 40, 2: 28, 3: 34, 10: 48, 4: 32},
+           7: {3: 43, 2: 39, 5: 2, 10: 34, 1: 31, 8: 14},
+           8: {9: 42, 3: 11, 2: 37, 10: 25, 7: 14, 6: 26, 1: 15, 5: 49},
+           9: {4: 18, 8: 42, 10: 46, 6: 31},
+           10: {8: 25, 5: 31, 7: 34, 9: 46, 3: 21, 6: 48}}
+
+
+    # bb = BB(test, min_, start, end)
+    # get_time = Experiments()
+    # get_time.timer(bb)
+    # print(bb.shortest_path())
     # print("Time", get_time.totalTime)
-    test = Experiments()
-
-    test.trials(10)
-    test.plot_by_min([1, 2, 3, 4], 10)
+    # test = Experiments()
+    #
+    # test.trials(10)
+    # test.plot_by_min([1, 2, 3, 4], 10)
 
     num_of_nodes = 10
     num_of_edges = int(num_of_nodes * math.log(num_of_nodes, 2))
@@ -257,9 +280,13 @@ def main():
     g5.create_adjacency_list()
     print(g5.adjacency_list)
 
-    min_ = 2
-    start = random.choice(list(g5.adjacency_list.keys()))
-    end = random.choice(list(g5.adjacency_list.keys()))
+    min_ = 4
+    start = 1
+    minlen = num_of_nodes
+    for node in g5.adjacency_list.keys():
+        if len(g5.adjacency_list [node].keys()) < minlen:
+            end = node
+    # end = num_of_nodes
     bb1 = BB(g5.adjacency_list, min_, start, end)
     print(bb1.shortest_path())
 
