@@ -2,6 +2,8 @@ import unittest as ut
 import random
 import math
 
+from scipy.special import comb
+
 
 class Node:
     """
@@ -105,13 +107,19 @@ class Graph:
         else:
             return self.get_node(id1).has_neighbor(id2)
 
-    def density(self):
-        """ method to calculate the density of a graph """
-        #
-        # V = len(g.keys())
-        # # E = len(self.edges())
-        # return 2.0 * E / (V * (V - 1))
-        pass
+    def get_density(self):
+        """ Calculate the density of a graph
+        density = (actual number of edges)/(possible number of edges)
+        possible number of edges = number of nodes choose 2
+
+        returns: float
+            density
+        """
+        possible_edges = comb(len(self.adjacency_list), 2, exact=True, repetition=False)
+        # get actual number of edges
+        edges = (sum([len(self.adjacency_list[x]) for x in self.adjacency_list]))/2
+        density = edges / possible_edges
+        return density
 
     def generate_connected_graph(self, n, m, max_w):
         """ Generate an Erdős–Rényi random graph of n nodes, and m edges """
@@ -179,12 +187,13 @@ if __name__ == '__main__':
     gt.test_tiny_graph()
 
     # Random Graph Test
-    num_of_nodes = 10
-    num_of_edges = int(math.log(num_of_nodes, 2))
+    num_of_nodes = 10000
+    num_of_edges = int(math.log(num_of_nodes, 2)/2)
     gt.test_random_graph(num_of_nodes, num_of_edges)
 
     g5 = Graph()
     g5.generate_connected_graph(num_of_nodes, num_of_edges, 50)
     g5.create_adjacency_list()
     print(g5.adjacency_list)
+    print(g5.get_density())
     print("All tests passed")

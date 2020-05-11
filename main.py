@@ -25,7 +25,7 @@ class BB:
         else:
             return 0
 
-    # select from F the (v,path_from_start) where the cost between s and v is the lowest
+    # select from f the (v,path_from_start) where the cost between s and v is the lowest
     def select_v_with_lowest_cost(self, f):
         min_node = None
         min_cost = sys.maxsize
@@ -37,7 +37,6 @@ class BB:
 
     # expand configuration
     def expand(self, node, f):
-
         if f[node][0] is None:
             path_from_start = []
         else:
@@ -64,16 +63,13 @@ class BB:
     def shortest_path(self):
         f = defaultdict(lambda: [])  # contains {v:path_from_start, cost}
         f[self.start_node] = [[], 1.0]
-        b = ["", [], sys.maxsize]  # [lastNode, path_from_start,cost]}
+        b = ["", [], sys.maxsize]  # [last node, path_from_start, cost]}
         visited = defaultdict(lambda: [])  # contains {v:[path_from_start, cost]}
         while f is not None:
-            # print("f====",f)
             # select from f the (v,path_from_start) where the cost between s and v is the lowest
             min_v = self.select_v_with_lowest_cost(f)
-            # print(min_v)
             # Expand
             configurations = self.expand(min_v, f)
-            # print(configurations)
             # if we arrived to dead end
             if not configurations:
                 del f[min_v]
@@ -85,41 +81,29 @@ class BB:
                     visited[min_v] = []
                     visited[min_v].append(f[min_v][0])  # add path_from_start
                     visited[min_v].append(f[min_v][1])  # add cost
-                    # print("visited", visited)
 
                 # delete it because we dont want it to expand again
                 if min_v in f.keys():
                     del f[min_v]
-                # calculate cost for v
                 c = self.calc_cost(path_from_start)
 
                 if visited[last_node_in_path_from_start] != [] and visited[last_node_in_path_from_start][1] < c:
-                    # print("visit cost ,", last_node_in_path_from_start, " ", visited[last_node_in_path_from_start][1])
                     check = "dead end"
                 elif last_node_in_path_from_start is self.end_node and len(path_from_start) >= self.min_items:
                     check = "solution found"
                 else:
                     check = "continue"
-                    # update the node
-                    # visited[last_node_in_path_from_start] = [path_from_start,c]
-                # print(path_from_start)
 
                 if check == "solution found":
-                    # print("check", check)
-                    # if c < b[2]:
-                    #     b = [last_node_in_path_from_start, path_from_start, c]
-                    # F = None
                     return path_from_start
                 elif check == "dead end":
                     # discard configuration
                     configurations.remove(path_from_start)
                 else:
-                    # print("lower bound",self.lowerBound(last_node_in_path_from_start, path_from_start))
                     if self.lower_bound(last_node_in_path_from_start, path_from_start) < b[2]:
                         cost = self.lower_bound(last_node_in_path_from_start, path_from_start)
-                        # if last_node_in_path_from_start not in F.keys():
+                        # if last_node_in_path_from_start not in f.keys():
                         f[last_node_in_path_from_start] = [path_from_start, cost]
-                # print ("==================================================")
         return b
 
     def lower_bound(self, v, path_from_start):
@@ -242,8 +226,6 @@ def main():
     bb = BB(graph, min_, start, end)
     get_time = Experiments()
     get_time.timer(bb)
-    # print(bb.shortestPath())
-    # print("Time", get_time.totalTime)
     test = Experiments()
 
     test.trials(10)
