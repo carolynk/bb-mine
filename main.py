@@ -8,6 +8,7 @@ from collections import defaultdict
 import time
 import numpy as np
 import math
+from scipy.special import comb
 
 
 class BB:
@@ -247,6 +248,37 @@ class Experiments:
 
         plt.show()
 
+    def plot_by_density(self, t):
+        """
+        :param t: int
+            num of trials
+        :return: None, but prints plots
+        """
+        sizes = [10, 50, 90, 140]
+        densities = []
+        all_data = []
+
+        for size in sizes:
+            runtimes = []
+            densities.append(self.get_density(self.size_graph(size,"graph")))
+            for i in range(0, t):
+                b = self.size_graph(size)
+                runtimes.append(self.timer(b))
+            all_data.append(runtimes)
+
+        means = []
+        sd = []
+        for x in all_data:
+            means.append(sum(x) / t)
+            sd.append(np.std(x))  # get standard deviations
+
+        plt.errorbar(densities, means, sd, linestyle='-', marker='^')
+        plt.xlabel('Density')
+        plt.ylabel('Runtime')
+        plt.title('BB')
+
+        plt.show()
+
     def min_graphs(self,min):
         """
         :param min: minimum desired nodes
@@ -260,7 +292,7 @@ class Experiments:
         test = BB(minsize100, min, start, end)
         return test
 
-    def size_graph(self,size):
+    def size_graph(self,size,select=None):
         """
         :param size: size of graph
 
@@ -287,7 +319,26 @@ class Experiments:
         start = 1
         end = len (g.keys())
         test = BB(g,min,start,end)
-        return test
+        if select == "graph":
+            return g
+        else:
+            return test
+
+    def get_density(self,graph):
+        """ Calculate the density of a graph
+        :param graph: the graph that we calculate its density
+        density = (actual number of edges)/(possible number of edges)
+        possible number of edges = number of nodes choose 2
+
+        returns: float
+            density
+        """
+        possible_edges = comb(len(graph), 2, exact=True, repetition=False)
+        # possible_edges = len(graph.keys()) * (len(graph.keys()) - 1)
+        # get actual number of edges
+        edges = (sum([len(graph[x]) for x in graph])) / 2
+        density = edges / possible_edges
+        return density
 
 
 class BBTests(ut.TestCase):
@@ -304,6 +355,8 @@ def main():
     test.plot_by_size(10)
     # test by different mins
     test.plot_by_min([5,10,15,20,25],10)
+    # test by density
+    test.plot_by_density(10)
     # test tiny graph
     test.test_tiny_graph()
 
