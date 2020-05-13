@@ -1,8 +1,7 @@
 import unittest as ut
 import random
 import math
-
-# from scipy.special import comb
+from scipy.special import comb
 
 
 class Node:
@@ -117,35 +116,52 @@ class Graph:
         """
         possible_edges = comb(len(self.adjacency_list), 2, exact=True, repetition=False)
         # get actual number of edges
-        edges = (sum([len(self.adjacency_list[x]) for x in self.adjacency_list]))/2
+        edges = (sum([len(self.adjacency_list[x]) for x in self.adjacency_list])) / 2
         density = edges / possible_edges
         return density
 
     def generate_connected_graph(self, n, m, max_w):
         """ Generate an Erdős–Rényi random graph of n nodes, and m edges """
+        if m < n - 1:
+            print("m should be at at least n-1")
+        max_edges = comb(n, 2, exact=True, repetition=False)
+        if m > max_edges:
+            print("too many edges")
+        # add the first node
+        self.add_node(1)
 
-        for i in range(1, n + 1):
+        for i in range(2, n + 1):
             self.add_node(i)
-
-        id1 = random.randint(1, n)
-        for i in range(1, m + 1):
-            id2 = random.randint(1, n)
+            # randomly choose an existing node to attach to
+            nid = random.randint(1, i - 1)
+            # choose a random weight between 1 and max_w
             w = random.randint(1, max_w)
-            # checks
-            needs_redo = True
-            while needs_redo:
-                id2 = random.randint(1, n)
-                if id1 == id2:
-                    needs_redo = True
-                elif self.edge_exists(id1, id2):
-                    needs_redo = True
-                else:
-                    needs_redo = False
-            self.add_edge_undirected(id1, id2, w)
+            # create edge between node i and node(1... i = 1)
 
-            # self.adjacency_list[id1] = self.get_node(id1).edges
-            id1 = id2
-        return self
+            self.add_edge_undirected(i, nid, w)
+
+            current_num_nodes = n
+        if m > n:
+            for i in range(n, m + 1):
+                # id2 = random.randint(1, current_num_nodes)
+                w = random.randint(1, max_w)
+                # checks
+                needs_redo = True
+                id1 = random.randint(1, n)
+                id2 = random.randint(1, n)
+                while needs_redo:
+                    choose_redo = random.randint(1, 2)
+                    if choose_redo == 1:
+                        id1 = random.randint(1, n)
+                    else:
+                        id2 = random.randint(1, n)
+                    if id1 == id2:
+                        needs_redo = True
+                    elif self.edge_exists(id1, id2):
+                        needs_redo = True
+                    else:
+                        needs_redo = False
+                self.add_edge_undirected(id1, id2, w)
 
     def create_adjacency_list(self):
         for id_ in self.nodes:
@@ -170,16 +186,28 @@ class GraphTest(ut.TestCase):
         self.assertEqual(g.edge_exists(3, 2), False)
         self.assertEqual(g.get_neighbors(1), {2: 17, 3: 34})
         self.assertEqual(g.get_neighbors(2), {1: 17})
+        g.create_adjacency_list()
+        self.assertEqual(g.get_density(), 2 / 3)
 
         g.create_adjacency_list()
         self.assertEqual(g.adjacency_list, {1: {2: 17, 3: 34}, 2: {1: 17}, 3: {1: 34}})
+
+        edge_num = int((sum([len(g.adjacency_list[x]) for x in g.adjacency_list])) / 2)
+        self.assertEqual(edge_num, 2)
 
     def test_random_graph(self, n, m):
         """ Test methods for a random graph """
 
         g_rand = Graph()
         g_rand.generate_connected_graph(n, m, 50)
-        self.assertEqual(len(g_rand.nodes), n)
+        g_rand.create_adjacency_list()
+        print("adj list", g_rand.adjacency_list)
+        print("n num of nodes", len(g_rand.adjacency_list))
+        self.assertEqual(len(g_rand.adjacency_list), n)
+
+        # self.assertEqual(len(g_rand.edges), m)
+        edge_num = int((sum([len(g_rand.adjacency_list[x]) for x in g_rand.adjacency_list])) / 2)
+        self.assertEqual(edge_num, m)
 
 
 if __name__ == '__main__':
@@ -187,13 +215,14 @@ if __name__ == '__main__':
     gt.test_tiny_graph()
 
     # Random Graph Test
-    num_of_nodes = 10000
-    num_of_edges = int(math.log(num_of_nodes, 2)/2)
+    num_of_nodes = 5
+    num_of_edges = 10
+    # num_of_edges = int(math.log(num_of_nodes, 2)/2)
     gt.test_random_graph(num_of_nodes, num_of_edges)
 
     g5 = Graph()
     g5.generate_connected_graph(num_of_nodes, num_of_edges, 50)
     g5.create_adjacency_list()
     print(g5.adjacency_list)
-    print(g5.get_density())
+    print("density", g5.get_density())
     print("All tests passed")
