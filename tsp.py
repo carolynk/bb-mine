@@ -1,4 +1,9 @@
 import math
+import time
+import matplotlib.pyplot as plt
+import numpy as np
+from graph import Graph
+from main import Experiments
 
 
 class convert:
@@ -90,24 +95,56 @@ def next_permutation(L):
     return True
 
 
+tspTimer = []
+bbTimer =[]
+
+
+# timer for tsp
+def timer(graph, start):
+    timer_on = time.time()
+    print("cost", travellingSalesmanProblem(graph, start))
+    timer_off = time.time()
+    tspTimer.append(timer_off - timer_on)
+
+
 # Driver Code
 if __name__ == "__main__":
     # matrix representation of graph
-    graph = {
-              0: {0:0,1:10,2:15,3:20},
-              1: {0:10,1:0,2:35,3:25},
-              2: {0:15,1:35,2:0,3:30},
-              3: {0:20,1:25,2:30,3:0},
-
-             }
-    c = convert(graph)
-    c.convert_adjlist_to_matrix()
-    print(graph)
-    print (c.matrix)
+    # graph = {
+    #           0: {0:0,1:10,2:15,3:20},
+    #           1: {0:10,1:0,2:35,3:25},
+    #           2: {0:15,1:35,2:0,3:30},
+    #           3: {0:20,1:25,2:30,3:0},
+    #
+    #          }
+    # c = convert(graph)
+    # c.convert_adjlist_to_matrix()
+    # print(graph)
+    # print (c.matrix)
 
     # graph = [[0, 10, 15, 20], [10, 0, 35, 25],
     #          [15, 35, 0, 30], [20, 25, 30, 0]]
     s = 0
-    print(travellingSalesmanProblem(c.matrix, s))
+    # print(travellingSalesmanProblem(c.matrix, s))
+    sizes = [10, 50, 90, 140]
+    test = Experiments()
+    # time for bb
+    for size in sizes:
+        b = test.size_graph(size)
+        time_bb = test.timer(b)
+        bbTimer.append(time_bb)
+
+    sizes = [10, 50, 90, 140]
+    # time for tsp
+    for size in sizes:
+        graph = test.size_graph(size,"graph")
+        c = convert(graph)
+        c.convert_adjlist_to_matrix()
+        print("matrix",c.matrix)
+        timer(c.matrix,1)
+
+
+    print("tsp times =",tspTimer)
+    print("bb times =", bbTimer)
 
 

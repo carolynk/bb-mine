@@ -296,7 +296,7 @@ class Experiments:
         """
         :param size: size of graph
 
-        :return: an bb object
+        :return: an bb object or graph
         """
         # all for min 3
         if size == 10:
