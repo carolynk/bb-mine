@@ -14,7 +14,6 @@ class convert:
 
     def convert_adjlist_to_matrix(self):
         keys = self.graph.keys()
-        print(keys)
         i, j = 0, 0
         for node1 in keys:
             for node2 in keys:
@@ -109,24 +108,7 @@ def timer(graph, start):
 
 # Driver Code
 if __name__ == "__main__":
-    # matrix representation of graph
-    # graph = {
-    #           0: {0:0,1:10,2:15,3:20},
-    #           1: {0:10,1:0,2:35,3:25},
-    #           2: {0:15,1:35,2:0,3:30},
-    #           3: {0:20,1:25,2:30,3:0},
-    #
-    #          }
-    # c = convert(graph)
-    # c.convert_adjlist_to_matrix()
-    # print(graph)
-    # print (c.matrix)
-
-    # graph = [[0, 10, 15, 20], [10, 0, 35, 25],
-    #          [15, 35, 0, 30], [20, 25, 30, 0]]
-    s = 0
-    # print(travellingSalesmanProblem(c.matrix, s))
-    sizes = [10, 50, 90, 140]
+    sizes = [10,140,190]
     test = Experiments()
     # time for bb
     for size in sizes:
@@ -134,17 +116,23 @@ if __name__ == "__main__":
         time_bb = test.timer(b)
         bbTimer.append(time_bb)
 
-    sizes = [10, 50, 90, 140]
+    sizes = [10,140,190]
     # time for tsp
     for size in sizes:
         graph = test.size_graph(size,"graph")
         c = convert(graph)
         c.convert_adjlist_to_matrix()
-        print("matrix",c.matrix)
-        timer(c.matrix,1)
+        timer(c.matrix,int(size/2))
 
-
-    print("tsp times =",tspTimer)
-    print("bb times =", bbTimer)
-
-
+    y = bbTimer
+    y2 = tspTimer
+    x = sizes
+    fig = plt.figure()
+    ax = plt.subplot(111)
+    ax.plot(x, y2, label='Branch and Bound')
+    ax.plot(x, y, label='TSP')
+    plt.xlabel('Size')
+    plt.ylabel('Runtime')
+    plt.title('Branch and Bound vs TSP')
+    ax.legend()
+    plt.show()
