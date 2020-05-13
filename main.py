@@ -334,16 +334,11 @@ class Experiments:
             density
         """
         possible_edges = comb(len(graph), 2, exact=True, repetition=False)
-        # possible_edges = len(graph.keys()) * (len(graph.keys()) - 1)
         # get actual number of edges
         edges = (sum([len(graph[x]) for x in graph])) / 2
         density = edges / possible_edges
         return density
 
-
-class BBTests(ut.TestCase):
-    def test(self):
-        pass
 
 
 def main():
@@ -361,18 +356,6 @@ def main():
     test.test_tiny_graph()
 
 
-    # Random Graph Test
-    # num_of_nodes = 90
-    # num_of_edges = 4005
-    # g5 = Graph()
-    # g5.generate_connected_graph(num_of_nodes, num_of_edges, 50)
-    # g5.create_adjacency_list()
-    # start = 1
-    # end = len(g5.adjacency_list.keys())
-    # min =3
-    # print(g5.adjacency_list)
-    # bb = BB(g5.adjacency_list,min,start,end)
-    # print(bb.shortest_path())
 
 if __name__ == "__main__":
     main()
