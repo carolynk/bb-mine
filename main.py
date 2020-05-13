@@ -190,8 +190,7 @@ class Experiments:
         timer_off = time.time()
 
         return timer_off - timer_on
-
-    def plot_by_min(self, mins, t):
+     plot_by_min(self, mins, t):
         """
         :param mins: List
             list of mins
@@ -227,7 +226,7 @@ class Experiments:
             num of trials
         :return: None, but prints plots
         """
-        sizes = [10, 50, 90, 140,190]
+        sizes = [10, 50, 90, 140, 190]
         all_data = []
         for size in sizes:
             runtimes = []
@@ -292,7 +291,7 @@ class Experiments:
         test = BB(minsize100, min, start, end)
         return test
 
-    def size_graph(self,size,select=None):
+    def size_graph(self, size, select=None):
         """
         :param size: size of graph
 
@@ -317,8 +316,8 @@ class Experiments:
 
         min = 3
         start = size/2
-        end = len (g.keys())
-        test = BB(g,min,start,end)
+        end = len(g.keys())
+        test = BB(g, min, start, end)
         if select == "graph":
             return g
         else:
