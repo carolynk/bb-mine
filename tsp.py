@@ -28,15 +28,10 @@ class convert:
 # sanjeev2552
 # Python3 program to implement traveling salesman
 # problem using naive approach.
-from sys import maxsize
-
-V = 4
-
-
-# implementation of traveling Salesman Problem
-# Travelling salesman code by sanjeev2552
 # https://www.geeksforgeeks.org/traveling-salesman-problem-tsp-implementation/
 
+from sys import maxsize
+V = 4
 def travellingSalesmanProblem(graph, s):
     # store all vertex apart from source vertex
     vertex = []
