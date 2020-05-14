@@ -190,7 +190,8 @@ class Experiments:
         timer_off = time.time()
 
         return timer_off - timer_on
-     plot_by_min(self, mins, t):
+
+    def plot_by_min(self, mins, t):
         """
         :param mins: List
             list of mins
@@ -278,6 +279,55 @@ class Experiments:
 
         plt.show()
 
+
+    def plot_by_random_density(self, t):
+        """
+        :param t: int
+            num of trials
+        :return: None, but prints plots
+        """
+        size = 100
+        edges = [100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
+        density = []
+        for e in edges:
+                d = e/4950
+                density.append(d)
+
+        all_data = []
+        for edge in edges:
+            runtimes = []
+            for i in range(0, t):
+                g = Graph()
+                g.generate_connected_graph(size, edge, 50)
+                g.create_adjacency_list()
+                # self.graph = g
+                # self.min_items = m
+                # self.start_node = s
+                # self.end_node = e
+                start = 1
+                end = 100
+                try:
+                    b = BB(g.adjacency_list, 3, start, end)
+                    runtimes.append(self.timer(b))
+                except:
+                    print("Something went wrong")
+                finally:
+                    print("The 'try except' is finished")
+
+            all_data.append(runtimes)
+        means = []
+        sd = []
+        for x in all_data:
+            means.append(sum(x) / t)
+            sd.append(np.std(x))  # get standard deviations
+
+        plt.errorbar(density, means, sd, linestyle='-', marker='^')
+        plt.xlabel('Density')
+        plt.ylabel('Runtime')
+        plt.title('BB')
+
+        plt.show()
+
     def min_graphs(self,min):
         """
         :param min: minimum desired nodes
@@ -291,7 +341,7 @@ class Experiments:
         test = BB(minsize100, min, start, end)
         return test
 
-    def size_graph(self, size, select=None):
+    def size_graph(self,size,select=None):
         """
         :param size: size of graph
 
@@ -322,6 +372,7 @@ class Experiments:
             return g
         else:
             return test
+
 
     def get_density(self,graph):
         """ Calculate the density of a graph
@@ -354,6 +405,8 @@ def main():
     # test tiny graph
     test.test_tiny_graph()
 
+
+    test.plot_by_random_density(10)
 
 
 if __name__ == "__main__":
