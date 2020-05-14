@@ -310,9 +310,11 @@ class Experiments:
                     b = BB(g.adjacency_list, 3, start, end)
                     runtimes.append(self.timer(b))
                 except:
-                    print("Something went wrong")
+                    # print("Something went wrong")
+                    pass
                 finally:
-                    print("The 'try except' is finished")
+                    pass
+                    # print("The 'try except' is finished")
 
             all_data.append(runtimes)
         means = []
@@ -406,7 +408,7 @@ def main():
     test.test_tiny_graph()
 
 
-    test.plot_by_random_density(10)
+    # test.plot_by_random_density(10)
 
 
 if __name__ == "__main__":
